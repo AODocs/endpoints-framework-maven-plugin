@@ -41,10 +41,9 @@ import org.apache.maven.project.MavenProject;
 
 /** Maven goal to create generated source dir from endpoints. */
 @Mojo(
-  name = "generateSrc",
-  requiresDependencyResolution = ResolutionScope.COMPILE,
-  defaultPhase = LifecyclePhase.GENERATE_SOURCES
-)
+    name = "generateSrc",
+    requiresDependencyResolution = ResolutionScope.COMPILE,
+    defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class EndpointsGenSrcMojo extends AbstractMojo {
 
   @Parameter(defaultValue = "${project}", readonly = true)
@@ -52,10 +51,9 @@ public class EndpointsGenSrcMojo extends AbstractMojo {
 
   /** Output directory for generated sources. */
   @Parameter(
-    defaultValue = "${project.build.directory}/generated-sources/endpoints",
-    property = "endpoints.generatedSrcDir",
-    required = true
-  )
+      defaultValue = "${project.build.directory}/generated-sources/endpoints",
+      property = "endpoints.generatedSrcDir",
+      required = true)
   private File generatedSrcDir;
 
   @Parameter(property = "endpoints.discoveryDocs", required = true)

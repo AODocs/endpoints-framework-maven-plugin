@@ -17,90 +17,41 @@
 
 package com.google.cloud.tools.maven.endpoints.framework;
 
-import com.google.api.server.spi.tools.EndpointsTool;
 import com.google.api.server.spi.tools.GetClientLibAction;
-import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
 
 /** Maven goal to generate client libraries (as zips). */
 @Mojo(
-  name = "clientLibs",
-  requiresDependencyResolution = ResolutionScope.COMPILE,
-  defaultPhase = LifecyclePhase.PREPARE_PACKAGE
-)
+    name = "clientLibs",
+    requiresDependencyResolution = ResolutionScope.COMPILE,
+    defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
 public class ClientLibsMojo extends AbstractEndpointsWebAppMojo {
-
-  @Parameter(defaultValue = "${project}", readonly = true)
-  private MavenProject project;
 
   /** Output directory for client libraries. */
   @Parameter(
-    defaultValue = "${project.build.directory}/client-libs",
-    property = "endpoints.clientLibDir",
-    required = true
-  )
+      defaultValue = "${project.build.directory}/client-libs",
+      property = "endpoints.clientLibDir",
+      required = true)
   private File clientLibDir;
 
-  /** Default hostname of the Endpoint Host. */
-  @Parameter(property = "endpoints.hostname")
-  private String hostname;
-
-  /** Default basePath of the Endpoint Host. */
-  @Parameter(property = "endpoints.basePath")
-  private String basePath;
+  @Override
+  protected String getActionName() {
+    return GetClientLibAction.NAME;
+  }
 
   @Override
-  public void execute() throws MojoExecutionException, MojoFailureException {
-    if (!clientLibDir.exists() && !clientLibDir.mkdirs()) {
-      throw new MojoExecutionException(
-          "Failed to create output directory: " + clientLibDir.getAbsolutePath());
-    }
-    try {
-      String classpath = Joiner.on(File.pathSeparator).join(project.getRuntimeClasspathElements());
-      classpath += File.pathSeparator + classesDir;
+  protected File getOutputDirectory() {
+    return clientLibDir;
+  }
 
-      List<String> params =
-          new ArrayList<>(
-              Arrays.asList(
-                  GetClientLibAction.NAME,
-                  "-o",
-                  clientLibDir.getAbsolutePath(),
-                  "-cp",
-                  classpath,
-                  "-l",
-                  "java",
-                  "-bs",
-                  "maven",
-                  "-w",
-                  webappDir.getAbsolutePath()));
-      if (!Strings.isNullOrEmpty(hostname)) {
-        params.add("-h");
-        params.add(hostname);
-      }
-      if (!Strings.isNullOrEmpty(basePath)) {
-        params.add("-p");
-        params.add(basePath);
-      }
-      if (serviceClasses != null) {
-        params.addAll(serviceClasses);
-      }
-
-      getLog().info("Endpoints Tool params : " + params.toString());
-      new EndpointsTool().execute(params.toArray(new String[params.size()]));
-
-    } catch (Exception e) {
-      throw new MojoExecutionException("Endpoints Tool Error", e);
-    }
+  @Override
+  protected void addSpecificParameters(List<String> params) {
+    params.addAll(Arrays.asList("-l", "java", "-bs", "maven"));
   }
 }
