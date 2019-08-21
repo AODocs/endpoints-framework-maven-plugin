@@ -17,89 +17,89 @@
 
 package com.google.cloud.tools.maven.endpoints.framework;
 
-import com.google.api.server.spi.tools.EndpointsTool;
 import com.google.api.server.spi.tools.GetOpenApiDocAction;
-import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
 
 /** Goal which generates openapi docs. */
 @Mojo(
-  name = "openApiDocs",
-  requiresDependencyResolution = ResolutionScope.COMPILE,
-  defaultPhase = LifecyclePhase.PREPARE_PACKAGE
-)
+    name = "openApiDocs",
+    requiresDependencyResolution = ResolutionScope.COMPILE,
+    defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
 public class OpenApiDocsMojo extends AbstractEndpointsWebAppMojo {
-
-  @Parameter(defaultValue = "${project}", readonly = true)
-  private MavenProject project;
 
   /** Output directory for openapi docs. */
   @Parameter(
-    defaultValue = "${project.build.directory}/openapi-docs",
-    property = "endpoints.openApiDocDir",
-    required = true
-  )
+      defaultValue = "${project.build.directory}/openapi-docs",
+      property = "endpoints.openApiDocDir",
+      required = true)
   private File openApiDocDir;
 
-  /** Default hostname of the endpoint host. */
-  @Parameter(property = "endpoints.hostname", required = false)
-  private String hostname;
+  /** API title in the Open API specification. */
+  @Parameter(property = "endpoints.title", required = false)
+  private String title;
 
-  /** Default basePath of the endpoint host. */
-  @Parameter(property = "endpoints.basePath", required = false)
-  private String basePath;
+  /** API description of the Open API specification. */
+  @Parameter(property = "endpoints.description", required = false)
+  private String description;
+
+  /** Adds the Google JSON error model as default response. */
+  @Parameter(property = "endpoints.addGoogleJsonErrorAsDefaultResponse", required = false)
+  private boolean addGoogleJsonErrorAsDefaultResponse;
+
+  /** Adds Google JSON error models as non-2xx response codes. */
+  @Parameter(property = "endpoints.addErrorCodesForServiceExceptions", required = false)
+  private boolean addErrorCodesForServiceExceptions;
+
+  /** Extracts common parameters to refs at specification level. */
+  @Parameter(property = "endpoints.extractCommonParametersAsRefs", required = false)
+  private boolean extractCommonParametersAsRefs;
+
+  /** Combine common parameters in the same path. */
+  @Parameter(property = "endpoints.combineCommonParametersInSamePath", required = false)
+  private boolean combineCommonParametersInSamePath;
 
   @Override
-  public void execute() throws MojoExecutionException {
-    try {
-      if (!openApiDocDir.exists() && !openApiDocDir.mkdirs()) {
-        throw new MojoExecutionException(
-            "Failed to create output directory: " + openApiDocDir.getAbsolutePath());
-      }
-      String classpath = Joiner.on(File.pathSeparator).join(project.getRuntimeClasspathElements());
-      classpath += File.pathSeparator + classesDir;
-
-      List<String> params =
-          new ArrayList<>(
-              Arrays.asList(
-                  GetOpenApiDocAction.NAME,
-                  "-o",
-                  computeOpenApiDocPath(),
-                  "-cp",
-                  classpath,
-                  "-w",
-                  webappDir.getAbsolutePath()));
-      if (!Strings.isNullOrEmpty(hostname)) {
-        params.add("-h");
-        params.add(hostname);
-      }
-      if (!Strings.isNullOrEmpty(basePath)) {
-        params.add("-p");
-        params.add(basePath);
-      }
-      if (serviceClasses != null) {
-        params.addAll(serviceClasses);
-      }
-
-      getLog().info("Endpoints Tool params : " + params.toString());
-      new EndpointsTool().execute(params.toArray(new String[params.size()]));
-
-    } catch (Exception e) {
-      throw new MojoExecutionException("Endpoints Tool Error", e);
-    }
+  protected String getActionName() {
+    return GetOpenApiDocAction.NAME;
   }
 
-  private String computeOpenApiDocPath() {
+  @Override
+  protected File getOutputDirectory() {
+    return openApiDocDir;
+  }
+
+  @Override
+  protected String getOutputPath() {
     return new File(openApiDocDir, "openapi.json").getAbsolutePath();
+  }
+
+  @Override
+  protected void addSpecificParameters(List<String> params) {
+    if (!Strings.isNullOrEmpty(title)) {
+      params.add("-t");
+      params.add(title);
+    }
+    if (!Strings.isNullOrEmpty(description)) {
+      params.add("-d");
+      params.add(description);
+    }
+    if (addGoogleJsonErrorAsDefaultResponse) {
+      params.add("--addGoogleJsonErrorAsDefaultResponse");
+    }
+    if (addErrorCodesForServiceExceptions) {
+      params.add("--addErrorCodesForServiceExceptions");
+    }
+    if (extractCommonParametersAsRefs) {
+      params.add("--extractCommonParametersAsRefs");
+    }
+    if (combineCommonParametersInSamePath) {
+      params.add("--combineCommonParametersInSamePath");
+    }
   }
 }
