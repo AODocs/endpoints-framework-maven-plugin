@@ -51,6 +51,11 @@ public class ClientLibsMojo extends AbstractEndpointsWebAppMojo {
   }
 
   @Override
+  protected String getAdditionalParameters() {
+    return null;
+  }
+
+  @Override
   protected void addSpecificParameters(List<String> params) {
     params.addAll(Arrays.asList("-l", "java", "-bs", "maven"));
   }

@@ -33,36 +33,44 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
     defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
 public class OpenApiDocsMojo extends AbstractEndpointsWebAppMojo {
 
+  /** Additional parameters to pass to Open API generation action. */
+  @Parameter(property = "endpoints.openApi.additionalParameters", required = false)
+  private String openApiAdditionalParameters;
+
   /** Output directory for openapi docs. */
   @Parameter(
       defaultValue = "${project.build.directory}/openapi-docs",
-      property = "endpoints.openApiDocDir",
+      property = "endpoints.openApi.docDir",
       required = true)
   private File openApiDocDir;
 
-  /** API title in the Open API specification. */
+  /** API title (used only in the Open API specification). */
   @Parameter(property = "endpoints.title", required = false)
   private String title;
 
-  /** API description of the Open API specification. */
+  /** API description (used only in the Open API specification). */
   @Parameter(property = "endpoints.description", required = false)
   private String description;
 
-  /** Adds the Google JSON error model as default response. */
-  @Parameter(property = "endpoints.addGoogleJsonErrorAsDefaultResponse", required = false)
-  private boolean addGoogleJsonErrorAsDefaultResponse;
+  /** API name in Endpoints Management console (allows to reuse same host). */
+  @Parameter(property = "endpoints.apiName", required = false)
+  private String apiName;
 
-  /** Adds Google JSON error models as non-2xx response codes. */
-  @Parameter(property = "endpoints.addErrorCodesForServiceExceptions", required = false)
-  private boolean addErrorCodesForServiceExceptions;
+  /** Adds the Google JSON error model as default response in Open API specification. */
+  @Parameter(property = "endpoints.openApi.addGoogleJsonErrorAsDefaultResponse", required = false)
+  private boolean openApiAddGoogleJsonErrorAsDefaultResponse;
 
-  /** Extracts common parameters to refs at specification level. */
-  @Parameter(property = "endpoints.extractCommonParametersAsRefs", required = false)
-  private boolean extractCommonParametersAsRefs;
+  /** Adds Google JSON error models as non-2xx response codes in Open API specification. */
+  @Parameter(property = "endpoints.openApi.addErrorCodesForServiceExceptions", required = false)
+  private boolean openApiAddErrorCodesForServiceExceptions;
 
-  /** Combine common parameters in the same path. */
-  @Parameter(property = "endpoints.combineCommonParametersInSamePath", required = false)
-  private boolean combineCommonParametersInSamePath;
+  /** Extracts common parameters to refs at specification level in Open API specification. */
+  @Parameter(property = "endpoints.openApi.extractCommonParametersAsRefs", required = false)
+  private boolean openApiExtractCommonParametersAsRefs;
+
+  /** Combine common parameters in the same path in Open API specification. */
+  @Parameter(property = "endpoints.openApi.combineCommonParametersInSamePath", required = false)
+  private boolean openApiCombineCommonParametersInSamePath;
 
   @Override
   protected String getActionName() {
@@ -80,6 +88,11 @@ public class OpenApiDocsMojo extends AbstractEndpointsWebAppMojo {
   }
 
   @Override
+  protected String getAdditionalParameters() {
+    return openApiAdditionalParameters;
+  }
+
+  @Override
   protected void addSpecificParameters(List<String> params) {
     if (!Strings.isNullOrEmpty(title)) {
       params.add("-t");
@@ -89,16 +102,20 @@ public class OpenApiDocsMojo extends AbstractEndpointsWebAppMojo {
       params.add("-d");
       params.add(description);
     }
-    if (addGoogleJsonErrorAsDefaultResponse) {
+    if (!Strings.isNullOrEmpty(apiName)) {
+      params.add("-a");
+      params.add(apiName);
+    }
+    if (openApiAddGoogleJsonErrorAsDefaultResponse) {
       params.add("--addGoogleJsonErrorAsDefaultResponse");
     }
-    if (addErrorCodesForServiceExceptions) {
+    if (openApiAddErrorCodesForServiceExceptions) {
       params.add("--addErrorCodesForServiceExceptions");
     }
-    if (extractCommonParametersAsRefs) {
+    if (openApiExtractCommonParametersAsRefs) {
       params.add("--extractCommonParametersAsRefs");
     }
-    if (combineCommonParametersInSamePath) {
+    if (openApiCombineCommonParametersInSamePath) {
       params.add("--combineCommonParametersInSamePath");
     }
   }

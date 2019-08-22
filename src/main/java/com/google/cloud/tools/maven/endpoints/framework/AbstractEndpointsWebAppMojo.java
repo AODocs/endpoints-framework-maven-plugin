@@ -59,10 +59,6 @@ public abstract class AbstractEndpointsWebAppMojo extends AbstractMojo {
       required = true)
   private File webappDir;
 
-  /** Additional parameters to pass to the Endpoints action. */
-  @Parameter(property = "endpoints.additionalParameters", required = false)
-  private String additionalParameters;
-
   @Override
   public final void execute() throws MojoExecutionException {
     File outputDirectory = getOutputDirectory();
@@ -105,6 +101,7 @@ public abstract class AbstractEndpointsWebAppMojo extends AbstractMojo {
       params.add("-p");
       params.add(basePath);
     }
+    String additionalParameters = getAdditionalParameters();
     if (!Strings.isNullOrEmpty(additionalParameters)) {
       params.addAll(Splitter.on(' ').trimResults().splitToList(additionalParameters));
     }
@@ -119,6 +116,8 @@ public abstract class AbstractEndpointsWebAppMojo extends AbstractMojo {
   protected String getOutputPath() {
     return getOutputDirectory().getAbsolutePath();
   }
+
+  protected abstract String getAdditionalParameters();
 
   protected abstract void addSpecificParameters(List<String> params);
 }

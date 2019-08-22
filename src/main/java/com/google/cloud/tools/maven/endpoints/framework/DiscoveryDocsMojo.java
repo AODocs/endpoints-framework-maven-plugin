@@ -32,10 +32,14 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
     defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
 public class DiscoveryDocsMojo extends AbstractEndpointsWebAppMojo {
 
+  /** Additional parameters to pass to Open API generation action. */
+  @Parameter(property = "endpoints.discovery.additionalParameters", required = false)
+  private String discoveryAdditionalParameters;
+
   /** Output directory for discovery docs. */
   @Parameter(
       defaultValue = "${project.build.directory}/discovery-docs",
-      property = "endpoints.discoveryDocDir",
+      property = "endpoints.discovery.docDir",
       required = true)
   private File discoveryDocDir;
 
@@ -47,6 +51,11 @@ public class DiscoveryDocsMojo extends AbstractEndpointsWebAppMojo {
   @Override
   protected File getOutputDirectory() {
     return discoveryDocDir;
+  }
+
+  @Override
+  protected String getAdditionalParameters() {
+    return discoveryAdditionalParameters;
   }
 
   @Override
