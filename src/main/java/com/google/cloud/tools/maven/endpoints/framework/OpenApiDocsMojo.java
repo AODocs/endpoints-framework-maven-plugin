@@ -39,10 +39,10 @@ public class OpenApiDocsMojo extends AbstractEndpointsWebAppMojo {
 
   /** Output directory for openapi docs. */
   @Parameter(
-      defaultValue = "${project.build.directory}/openapi-docs",
-      property = "endpoints.openApi.docDir",
+      defaultValue = "${project.build.directory}/openapi-docs/openapi.json",
+      property = "endpoints.openApi.doc",
       required = true)
-  private File openApiDocDir;
+  private File openApiDoc;
 
   /** API title (used only in the Open API specification). */
   @Parameter(property = "endpoints.title", required = false)
@@ -79,12 +79,12 @@ public class OpenApiDocsMojo extends AbstractEndpointsWebAppMojo {
 
   @Override
   protected File getOutputDirectory() {
-    return openApiDocDir;
+    return openApiDoc.getParentFile();
   }
 
   @Override
   protected String getOutputPath() {
-    return new File(openApiDocDir, "openapi.json").getAbsolutePath();
+    return openApiDoc.getAbsolutePath();
   }
 
   @Override
