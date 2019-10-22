@@ -56,6 +56,14 @@ public class OpenApiDocsMojo extends AbstractEndpointsWebAppMojo {
   @Parameter(property = "endpoints.apiName", required = false)
   private String apiName;
 
+  /** Template to generate tag names. */
+  @Parameter(property = "endpoints.tagTemplate", required = false)
+  private String tagTemplate;
+
+  /** Template to generate operation ids. */
+  @Parameter(property = "endpoints.operationIdTemplate", required = false)
+  private String operationIdTemplate;
+
   /** Adds the Google JSON error model as default response in Open API specification. */
   @Parameter(property = "endpoints.openApi.addGoogleJsonErrorAsDefaultResponse", required = false)
   private boolean openApiAddGoogleJsonErrorAsDefaultResponse;
@@ -105,6 +113,14 @@ public class OpenApiDocsMojo extends AbstractEndpointsWebAppMojo {
     if (!Strings.isNullOrEmpty(apiName)) {
       params.add("-a");
       params.add(apiName);
+    }
+    if (!Strings.isNullOrEmpty(tagTemplate)) {
+      params.add("--tagTemplate");
+      params.add(tagTemplate);
+    }
+    if (!Strings.isNullOrEmpty(operationIdTemplate)) {
+      params.add("--operationIdTemplate");
+      params.add(operationIdTemplate);
     }
     if (openApiAddGoogleJsonErrorAsDefaultResponse) {
       params.add("--addGoogleJsonErrorAsDefaultResponse");
