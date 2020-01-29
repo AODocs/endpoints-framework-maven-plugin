@@ -34,7 +34,7 @@ import org.apache.maven.project.MavenProject;
 public abstract class AbstractEndpointsWebAppMojo extends AbstractMojo {
 
   @Parameter(defaultValue = "${project}", readonly = true)
-  private MavenProject project;
+  MavenProject project;
 
   /** Location of compile java classes. */
   @Parameter(defaultValue = "${project.build.outputDirectory}", readonly = true)
@@ -61,6 +61,7 @@ public abstract class AbstractEndpointsWebAppMojo extends AbstractMojo {
 
   @Override
   public final void execute() throws MojoExecutionException {
+    preExecute();
     File outputDirectory = getOutputDirectory();
     if (!outputDirectory.exists() && !outputDirectory.mkdirs()) {
       throw new MojoExecutionException(
@@ -108,6 +109,8 @@ public abstract class AbstractEndpointsWebAppMojo extends AbstractMojo {
 
     return params;
   }
+
+  protected void preExecute() throws MojoExecutionException {}
 
   protected abstract String getActionName();
 
