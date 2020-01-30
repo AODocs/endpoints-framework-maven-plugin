@@ -74,7 +74,7 @@
       </plugin>
 
       <plugin>
-        <groupId>com.google.cloud.tools</groupId>
+        <groupId>com.aodocs.endpoints</groupId>
         <artifactId>endpoints-framework-maven-plugin</artifactId>
         <version>${endpoints-framework-maven-plugin.version}</version>
         <!--endpoints-plugin-configuration-->
