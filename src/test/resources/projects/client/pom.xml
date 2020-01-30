@@ -27,7 +27,7 @@
   <packaging>war</packaging>
 
   <properties>
-    <java.target.version>1.7</java.target.version>
+    <java.target.version>1.8</java.target.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <endpoints-framework-maven-plugin.version>@@PluginVersion@@</endpoints-framework-maven-plugin.version>
@@ -86,5 +86,11 @@
 
   </build>
 
+  <pluginRepositories>
+    <pluginRepository>
+      <id>artifactory</id>
+      <url>https://aodocs.jfrog.io/aodocs/libs-release</url>
+    </pluginRepository>
+  </pluginRepositories>
 </project>
 

@@ -29,7 +29,6 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.matchers.JUnitMatchers;
 import org.junit.rules.TemporaryFolder;
 
 public class OpenApiDocsMojoTest {
@@ -52,8 +51,9 @@ public class OpenApiDocsMojoTest {
     File testDir = new TestProject(tmpDir.getRoot(), "/projects/server").build();
     buildAndVerify(testDir);
 
-    String openapi = Files.toString(new File(testDir, OPEN_API_DOC_PATH), Charsets.UTF_8);
-    Assert.assertThat(openapi, JUnitMatchers.containsString(DEFAULT_HOSTNAME));
+    String openapi =
+        Files.asCharSource(new File(testDir, OPEN_API_DOC_PATH), Charsets.UTF_8).read();
+    Assert.assertThat(openapi, CoreMatchers.containsString(DEFAULT_HOSTNAME));
   }
 
   @Test
@@ -63,9 +63,10 @@ public class OpenApiDocsMojoTest {
         new TestProject(tmpDir.getRoot(), "/projects/server").applicationId("maven-test").build();
     buildAndVerify(testDir);
 
-    String openapi = Files.toString(new File(testDir, OPEN_API_DOC_PATH), Charsets.UTF_8);
-    Assert.assertThat(openapi, CoreMatchers.not(JUnitMatchers.containsString(DEFAULT_HOSTNAME)));
-    Assert.assertThat(openapi, JUnitMatchers.containsString("maven-test.appspot.com"));
+    String openapi =
+        Files.asCharSource(new File(testDir, OPEN_API_DOC_PATH), Charsets.UTF_8).read();
+    Assert.assertThat(openapi, CoreMatchers.not(CoreMatchers.containsString(DEFAULT_HOSTNAME)));
+    Assert.assertThat(openapi, CoreMatchers.containsString("maven-test.appspot.com"));
   }
 
   @Test
@@ -76,9 +77,10 @@ public class OpenApiDocsMojoTest {
             .build();
     buildAndVerify(testDir);
 
-    String openapi = Files.toString(new File(testDir, OPEN_API_DOC_PATH), Charsets.UTF_8);
-    Assert.assertThat(openapi, CoreMatchers.not(JUnitMatchers.containsString(DEFAULT_HOSTNAME)));
-    Assert.assertThat(openapi, JUnitMatchers.containsString("my.hostname.com"));
+    String openapi =
+        Files.asCharSource(new File(testDir, OPEN_API_DOC_PATH), Charsets.UTF_8).read();
+    Assert.assertThat(openapi, CoreMatchers.not(CoreMatchers.containsString(DEFAULT_HOSTNAME)));
+    Assert.assertThat(openapi, CoreMatchers.containsString("my.hostname.com"));
   }
 
   @Test
@@ -89,8 +91,9 @@ public class OpenApiDocsMojoTest {
             .build();
     buildAndVerify(testDir);
 
-    String openapi = Files.toString(new File(testDir, OPEN_API_DOC_PATH), Charsets.UTF_8);
-    Assert.assertThat(openapi, CoreMatchers.not(JUnitMatchers.containsString(DEFAULT_BASE_PATH)));
-    Assert.assertThat(openapi, JUnitMatchers.containsString("\"basePath\": \"/a/different/path\""));
+    String openapi =
+        Files.asCharSource(new File(testDir, OPEN_API_DOC_PATH), Charsets.UTF_8).read();
+    Assert.assertThat(openapi, CoreMatchers.not(CoreMatchers.containsString(DEFAULT_BASE_PATH)));
+    Assert.assertThat(openapi, CoreMatchers.containsString("\"basePath\": \"/a/different/path\""));
   }
 }

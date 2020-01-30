@@ -1,5 +1,4 @@
-![project status image](https://img.shields.io/badge/stability-stable-brightgreen.svg)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.google.cloud.tools/endpoints-framework-maven-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.google.cloud.tools/endpoints-framework-maven-plugin)
+[![Build Status](https://api.travis-ci.org/AODocs/endpoints-framework-maven-plugin.svg?branch=master)](https://travis-ci.org/AODocs/endpoints-framework-maven-plugin)
 # Endpoints Framework Maven plugin
 
 This Maven plugin provides goals and configurations to build Endpoints Framework projects.
@@ -27,12 +26,14 @@ All goals are prefixed with `endpoints-framework`
 
 The plugin exposes the following server side goals
 * `clientLibs` - generate client libraries
+* `clientSrc` - generate client code locally. Requires `python 2.7` and the python package `google-apis-client-generator`
 * `discoveryDocs` - generate discovery docs
 * `openApiDocs` - generate Open API docs
 
 The plugin exposes the following parameters for configuring server side goals
 * `discoveryDocDir` - The output directory of discovery documents
 * `clientLibDir` - The output directory of client libraries
+* `generatedSrcDir` - The output directory of generated endpoints source
 * `openApiDocDir` - The output directory of Open API documents
 * `serviceClasses` - List of service classes (optional), this can be inferred from web.xml
 * `webappDir` - Location of webapp directory

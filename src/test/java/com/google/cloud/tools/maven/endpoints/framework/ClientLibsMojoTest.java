@@ -32,7 +32,6 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.matchers.JUnitMatchers;
 import org.junit.rules.TemporaryFolder;
 
 public class ClientLibsMojoTest {
@@ -63,7 +62,7 @@ public class ClientLibsMojoTest {
 
     String apiJavaFile =
         getFileContentsInZip(new File(testDir, CLIENT_LIB_PATH), API_JAVA_FILE_PATH);
-    Assert.assertThat(apiJavaFile, JUnitMatchers.containsString(DEFAULT_URL_VARIABLE));
+    Assert.assertThat(apiJavaFile, CoreMatchers.containsString(DEFAULT_URL_VARIABLE));
   }
 
   @Test
@@ -76,10 +75,10 @@ public class ClientLibsMojoTest {
     String apiJavaFile =
         getFileContentsInZip(new File(testDir, CLIENT_LIB_PATH), API_JAVA_FILE_PATH);
     Assert.assertThat(
-        apiJavaFile, CoreMatchers.not(JUnitMatchers.containsString(DEFAULT_URL_VARIABLE)));
+        apiJavaFile, CoreMatchers.not(CoreMatchers.containsString(DEFAULT_URL_VARIABLE)));
     Assert.assertThat(
         apiJavaFile,
-        JUnitMatchers.containsString(
+        CoreMatchers.containsString(
             DEFAULT_URL_PREFIX + "\"https://maven-test.appspot.com/_ah/api/\";"));
   }
 
@@ -93,10 +92,10 @@ public class ClientLibsMojoTest {
     String apiJavaFile =
         getFileContentsInZip(new File(testDir, CLIENT_LIB_PATH), API_JAVA_FILE_PATH);
     Assert.assertThat(
-        apiJavaFile, CoreMatchers.not(JUnitMatchers.containsString(DEFAULT_URL_VARIABLE)));
+        apiJavaFile, CoreMatchers.not(CoreMatchers.containsString(DEFAULT_URL_VARIABLE)));
     Assert.assertThat(
         apiJavaFile,
-        JUnitMatchers.containsString(DEFAULT_URL_PREFIX + "\"https://my.hostname.com/_ah/api/\";"));
+        CoreMatchers.containsString(DEFAULT_URL_PREFIX + "\"https://my.hostname.com/_ah/api/\";"));
   }
 
   @Test
@@ -110,16 +109,17 @@ public class ClientLibsMojoTest {
     String apiJavaFile =
         getFileContentsInZip(new File(testDir, CLIENT_LIB_PATH), API_JAVA_FILE_PATH);
     Assert.assertThat(
-        apiJavaFile, CoreMatchers.not(JUnitMatchers.containsString(DEFAULT_BASE_PATH)));
+        apiJavaFile, CoreMatchers.not(CoreMatchers.containsString(DEFAULT_BASE_PATH)));
     Assert.assertThat(
         apiJavaFile,
-        JUnitMatchers.containsString(
+        CoreMatchers.containsString(
             DEFAULT_URL_PREFIX + "\"https://" + DEFAULT_HOSTNAME + "/a/different/path/\";"));
   }
 
   private String getFileContentsInZip(File zipFile, String path) throws IOException {
-    ZipFile zip = new ZipFile(zipFile);
-    InputStream is = zip.getInputStream(zip.getEntry(path));
-    return CharStreams.toString(new InputStreamReader(is, Charsets.UTF_8));
+    try (ZipFile zip = new ZipFile(zipFile)) {
+      InputStream is = zip.getInputStream(zip.getEntry(path));
+      return CharStreams.toString(new InputStreamReader(is, Charsets.UTF_8));
+    }
   }
 }

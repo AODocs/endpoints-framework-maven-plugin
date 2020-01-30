@@ -29,7 +29,6 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.matchers.JUnitMatchers;
 import org.junit.rules.TemporaryFolder;
 
 public class DiscoveryDocsMojoTest {
@@ -54,8 +53,9 @@ public class DiscoveryDocsMojoTest {
     File testDir = new TestProject(tmpDir.getRoot(), "/projects/server").build();
     buildAndVerify(testDir);
 
-    String discovery = Files.toString(new File(testDir, DISCOVERY_DOC_PATH), Charsets.UTF_8);
-    Assert.assertThat(discovery, JUnitMatchers.containsString(DEFAULT_URL));
+    String discovery =
+        Files.asCharSource(new File(testDir, DISCOVERY_DOC_PATH), Charsets.UTF_8).read();
+    Assert.assertThat(discovery, CoreMatchers.containsString(DEFAULT_URL));
   }
 
   @Test
@@ -65,10 +65,11 @@ public class DiscoveryDocsMojoTest {
         new TestProject(tmpDir.getRoot(), "/projects/server").applicationId("maven-test").build();
     buildAndVerify(testDir);
 
-    String discovery = Files.toString(new File(testDir, DISCOVERY_DOC_PATH), Charsets.UTF_8);
-    Assert.assertThat(discovery, CoreMatchers.not(JUnitMatchers.containsString(DEFAULT_URL)));
+    String discovery =
+        Files.asCharSource(new File(testDir, DISCOVERY_DOC_PATH), Charsets.UTF_8).read();
+    Assert.assertThat(discovery, CoreMatchers.not(CoreMatchers.containsString(DEFAULT_URL)));
     Assert.assertThat(
-        discovery, JUnitMatchers.containsString("https://maven-test.appspot.com/_ah/api"));
+        discovery, CoreMatchers.containsString("https://maven-test.appspot.com/_ah/api"));
   }
 
   @Test
@@ -79,9 +80,10 @@ public class DiscoveryDocsMojoTest {
             .build();
     buildAndVerify(testDir);
 
-    String discovery = Files.toString(new File(testDir, DISCOVERY_DOC_PATH), Charsets.UTF_8);
-    Assert.assertThat(discovery, CoreMatchers.not(JUnitMatchers.containsString(DEFAULT_URL)));
-    Assert.assertThat(discovery, JUnitMatchers.containsString("https://my.hostname.com/_ah/api"));
+    String discovery =
+        Files.asCharSource(new File(testDir, DISCOVERY_DOC_PATH), Charsets.UTF_8).read();
+    Assert.assertThat(discovery, CoreMatchers.not(CoreMatchers.containsString(DEFAULT_URL)));
+    Assert.assertThat(discovery, CoreMatchers.containsString("https://my.hostname.com/_ah/api"));
   }
 
   @Test
@@ -92,8 +94,9 @@ public class DiscoveryDocsMojoTest {
             .build();
     buildAndVerify(testDir);
 
-    String openapi = Files.toString(new File(testDir, DISCOVERY_DOC_PATH), Charsets.UTF_8);
-    Assert.assertThat(openapi, CoreMatchers.not(JUnitMatchers.containsString(DEFAULT_BASE_PATH)));
-    Assert.assertThat(openapi, JUnitMatchers.containsString("\"basePath\": \"/a/different/path/"));
+    String openapi =
+        Files.asCharSource(new File(testDir, DISCOVERY_DOC_PATH), Charsets.UTF_8).read();
+    Assert.assertThat(openapi, CoreMatchers.not(CoreMatchers.containsString(DEFAULT_BASE_PATH)));
+    Assert.assertThat(openapi, CoreMatchers.containsString("\"basePath\": \"/a/different/path/"));
   }
 }
