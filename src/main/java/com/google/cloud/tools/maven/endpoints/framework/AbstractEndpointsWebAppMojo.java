@@ -82,7 +82,7 @@ public abstract class AbstractEndpointsWebAppMojo extends AbstractMojo {
 
   private List<String> createParameterList(String actionName)
       throws DependencyResolutionRequiredException {
-    String classpath = Joiner.on(File.pathSeparator).join(project.getRuntimeClasspathElements());
+    String classpath = Joiner.on(File.pathSeparator).join(project.getCompileClasspathElements());
     classpath += File.pathSeparator + classesDir;
     List<String> params =
         new ArrayList<>(
