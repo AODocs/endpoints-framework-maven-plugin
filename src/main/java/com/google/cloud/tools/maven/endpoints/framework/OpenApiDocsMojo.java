@@ -115,11 +115,11 @@ public class OpenApiDocsMojo extends AbstractEndpointsWebAppMojo {
       params.add(apiName);
     }
     if (!Strings.isNullOrEmpty(tagTemplate)) {
-      params.add("--tagTemplate");
+      params.add("-tt");
       params.add(tagTemplate);
     }
     if (!Strings.isNullOrEmpty(operationIdTemplate)) {
-      params.add("--operationIdTemplate");
+      params.add("-oit");
       params.add(operationIdTemplate);
     }
     if (openApiAddGoogleJsonErrorAsDefaultResponse) {
