@@ -36,4 +36,12 @@ public class Test {
 
     return response;
   }
+
+  @ApiMethod(name = "echo", responseStatus = 202)
+  public MyBean echoAccepted(@Named("name") String name) {
+    MyBean response = new MyBean();
+    response.setString("ECHO " + name);
+
+    return response;
+  }
 }
