@@ -15,9 +15,9 @@ In your Maven App Engine Java app, add the following plugin to your pom.xml:
 
 ```XML
 <plugin>
-  <groupId>com.google.cloud.tools</groupId>
+  <groupId>com.aodocs.endpoints</groupId>
   <artifactId>endpoints-framework-maven-plugin</artifactId>
-  <version>1.0.2</version>
+  <version>2.4.6</version>
 </plugin>
 ```
 All goals are prefixed with `endpoints-framework`
