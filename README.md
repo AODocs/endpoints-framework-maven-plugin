@@ -17,7 +17,7 @@ In your Maven App Engine Java app, add the following plugin to your pom.xml:
 <plugin>
   <groupId>com.aodocs.endpoints</groupId>
   <artifactId>endpoints-framework-maven-plugin</artifactId>
-  <version>2.4.6</version>
+  <version>2.4.7</version>
 </plugin>
 ```
 All goals are prefixed with `endpoints-framework`
